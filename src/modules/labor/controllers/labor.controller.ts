@@ -9,7 +9,7 @@ import UpdateLaborService from '../services/update-labor.service';
 export default abstract class LaborController {
 	public static async list(request: Request, response: Response): Promise<Response> {
 		const query = request.query;
-		const labors = await ListLaborService.exeucte(query);
+		const labors = await ListLaborService.execute(query);
 		return response.json(labors);
 	}
 

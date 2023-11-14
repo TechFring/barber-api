@@ -1,8 +1,10 @@
 import { Joi, Segments, celebrate } from 'celebrate';
 import { Router } from 'express';
+import authenticatedMiddleware from '@core/middlewares/authenticated.middleware';
 import LaborController from '../controllers/labor.controller';
 
 const laborRoutes = Router();
+laborRoutes.use(authenticatedMiddleware);
 
 laborRoutes.get('/', celebrate({
 	[Segments.QUERY]: {

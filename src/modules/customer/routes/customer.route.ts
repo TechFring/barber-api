@@ -1,8 +1,10 @@
 import { Joi, Segments, celebrate } from 'celebrate';
 import { Router } from 'express';
+import authenticatedMiddleware from '@core/middlewares/authenticated.middleware';
 import CustomerController from '../controllers/customer.controller';
 
 const customerRoutes = Router();
+customerRoutes.use(authenticatedMiddleware);
 
 customerRoutes.get('/', celebrate({
 	[Segments.QUERY]: {

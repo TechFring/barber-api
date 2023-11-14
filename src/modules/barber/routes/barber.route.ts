@@ -1,8 +1,10 @@
 import { Joi, Segments, celebrate } from 'celebrate';
 import { Router } from 'express';
+import authenticatedMiddleware from '@core/middlewares/authenticated.middleware';
 import { BarberController } from '../controllers/barber.controller';
 
 const barberRoutes = Router();
+barberRoutes.use(authenticatedMiddleware);
 
 barberRoutes.get('/', celebrate({
 	[Segments.QUERY]: {
