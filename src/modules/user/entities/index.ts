@@ -1,14 +1,10 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
-import { LogEntity } from '@modules/logs/entities';
 
 @Entity('user')
 export abstract class UserEntity {
 	@PrimaryGeneratedColumn()
 	public id: string;
-
-	@OneToMany(() => LogEntity, log => log.user)
-	public log: LogEntity[];
 
 	@Column()
 	public name: string;
@@ -20,8 +16,8 @@ export abstract class UserEntity {
 	@Column()
 	public password: string;
 
-	@Column('boolean')
-	public admin: boolean;
+	@Column('int')
+	public level: boolean;
 
 	@Column('boolean')
 	public active: boolean;

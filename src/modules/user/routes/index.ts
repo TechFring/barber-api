@@ -2,6 +2,7 @@ import { Joi, Segments, celebrate } from 'celebrate';
 import { Router } from 'express';
 import { UserController } from '../controllers';
 import { authenticatedMiddleware } from '@core/middlewares';
+import { UserLevelEnum } from '../enums';
 
 export const userRoutes = Router();
 
@@ -16,12 +17,12 @@ userRoutes.get('/', authenticatedMiddleware, celebrate({
 	}
 }), UserController.list);
 
-userRoutes.post('/', authenticatedMiddleware, celebrate({
+userRoutes.post('/', celebrate({
 	[Segments.BODY]: {
 		name: Joi.string().required(),
 		login: Joi.string().required(),
 		password: Joi.string().required(),
-		admin: Joi.boolean().required(),
+		level: Joi.number().valid(UserLevelEnum.Operator, UserLevelEnum.Moderator, UserLevelEnum.Admin).required(),
 	}
 }), UserController.create);
 

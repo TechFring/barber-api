@@ -1,6 +1,5 @@
 import { Request } from 'express';
 import { getCustomRepository, getRepository } from 'typeorm';
-import { LogActionEnum } from '@modules/logs/enums';
 import { LaborRepository } from '@modules/labor/repositories';
 import { BarberRepository } from '@modules/barber/repositories';
 import { CustomerRepository } from '@modules/customer/repositories';
@@ -22,7 +21,6 @@ export default abstract class UpdateScheduleService {
 		const barber = await barberRepository.findByIdOrFail(body.barber_id, false);
 		const customer = await customerRepository.findByIdOrFail(body.customer_id, false);
 		const labors = await laborRepository.findByIdsOrFail(body.labors, false);
-		const logDescription = `O usuário ${user.name} atualizou o registro do agendamento ${schedule.name}`;
 
 		const endTime = calculateEndTime(labors, body.start_time);
 		await scheduleRepository.checkAvailabilityAndFail(body.barber_id, body.start_time, endTime, body.customer_id);
@@ -30,7 +28,7 @@ export default abstract class UpdateScheduleService {
 		const scheduleLabors = await scheduleLaborRepository.find({ where: { schedule_id: schedule.id } });
 		await scheduleLaborRepository.remove(scheduleLabors);
 
-		await CreateLogService.execute(user.id, logDescription, LogActionEnum.Update);
+		await CreateLogService.execute(`O usuário ${user.name} atualizou o agendamento ${schedule.name}`);
 
 		schedule.name = body.name;
 		schedule.start_time = body.start_time;

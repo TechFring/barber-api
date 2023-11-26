@@ -13,9 +13,8 @@ export abstract class CreateLaborService {
 		await repository.checkName(body.name);
 
 		const labor = repository.create(body as LaborEntity);
-		const logDescription = `O usuário ${user.name} cadastrou o serviço ${labor.name}`;
 
-		await CreateLogService.execute(user.id, logDescription, LogActionEnum.Create);
+		await CreateLogService.execute(`O usuário ${user.name} cadastrou o serviço ${labor.name}`);
 
 		return repository.save(labor);
 	}

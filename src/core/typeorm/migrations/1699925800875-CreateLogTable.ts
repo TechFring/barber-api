@@ -14,14 +14,6 @@ export class CreateLogTable1699925800875 implements MigrationInterface {
 						default: 'uuid_generate_v4()',
 					},
 					{
-						name: 'user_id',
-						type: 'uuid',
-					},
-					{
-						name: 'action',
-						type: 'int',
-					},
-					{
 						name: 'description',
 						type: 'varchar',
 					},
@@ -35,16 +27,6 @@ export class CreateLogTable1699925800875 implements MigrationInterface {
 						type: 'timestamp with time zone',
 						default: 'now()',
 					},
-				],
-				foreignKeys: [
-					{
-						name: 'LogUser',
-						referencedTableName: 'user',
-						referencedColumnNames: ['id'],
-						columnNames: ['user_id'],
-						onDelete: 'CASCADE',
-						onUpdate: 'CASCADE',
-					}
 				]
 			})
 		)

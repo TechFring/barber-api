@@ -1,11 +1,10 @@
 import { getRepository } from 'typeorm';
 import { LogEntity } from '../entities';
-import { LogActionEnum } from '../enums';
 
 export abstract class CreateLogService {
-	public static async execute(userId: string, description: string, action: LogActionEnum): Promise<LogEntity> {
+	public static async execute(description: string): Promise<LogEntity> {
 		const repository = getRepository(LogEntity);
-		const log = repository.create({ user_id: userId, description, action });
+		const log = repository.create({ description });
 
 		return repository.save(log);
 	}

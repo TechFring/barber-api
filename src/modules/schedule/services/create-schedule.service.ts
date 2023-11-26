@@ -1,6 +1,5 @@
 import { Request } from 'express';
 import { getCustomRepository } from 'typeorm';
-import { LogActionEnum } from '@modules/logs/enums';
 import { LaborRepository } from '@modules/labor/repositories';
 import { BarberRepository } from '@modules/barber/repositories';
 import { CustomerRepository } from '@modules/customer/repositories';
@@ -32,9 +31,8 @@ export default abstract class CreateScheduleService {
 			customer,
 			schedule_labor: labors.map((labor) => ({ labor_id: labor.id })) as ScheduleLaborEntity[]
 		});
-		const logDescription = `O usuário ${user.name} cadastrou o agendamento ${schedule.name}`;
 
-		await CreateLogService.execute(user.id, logDescription, LogActionEnum.Create);
+		await CreateLogService.execute(`O usuário ${user.name} cadastrou o agendamento ${schedule.name}`);
 
 		return scheduleRepository.save(schedule);
 	}
