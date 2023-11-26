@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import ErrorHandler from '@core/models/error-handler.model';
+import { ErrorHandler } from '@core/models';
 
-export default function errorHandlerMiddleware(error: Error, request: Request, response: Response, next: NextFunction) {
+export function errorHandlerMiddleware(error: Error, request: Request, response: Response, next: NextFunction) {
 	console.error(error);
 
 	if (error instanceof ErrorHandler) {

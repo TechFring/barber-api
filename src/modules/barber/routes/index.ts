@@ -1,9 +1,9 @@
 import { Joi, Segments, celebrate } from 'celebrate';
 import { Router } from 'express';
-import authenticatedMiddleware from '@core/middlewares/authenticated.middleware';
-import { BarberController } from '../controllers/barber.controller';
+import { authenticatedMiddleware } from '@core/middlewares';
+import { BarberController } from '../controllers';
 
-const barberRoutes = Router();
+export const barberRoutes = Router();
 barberRoutes.use(authenticatedMiddleware);
 
 barberRoutes.get('/', celebrate({
@@ -67,5 +67,3 @@ barberRoutes.patch('/inactive/:id', celebrate({
 		id: Joi.string().uuid()
 	},
 }), BarberController.inactive);
-
-export default barberRoutes;

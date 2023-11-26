@@ -1,9 +1,9 @@
 import { Joi, Segments, celebrate } from 'celebrate';
 import { Router } from 'express';
-import authenticatedMiddleware from '@core/middlewares/authenticated.middleware';
-import LaborController from '../controllers/labor.controller';
+import { authenticatedMiddleware } from '@core/middlewares';
+import { LaborController } from '../controllers';
 
-const laborRoutes = Router();
+export const laborRoutes = Router();
 laborRoutes.use(authenticatedMiddleware);
 
 laborRoutes.get('/', celebrate({
@@ -61,5 +61,3 @@ laborRoutes.patch('/inactive/:id', celebrate({
 		id: Joi.string().uuid()
 	}
 }), LaborController.inactive);
-
-export default laborRoutes;

@@ -1,9 +1,12 @@
+import { instanceToInstance } from 'class-transformer';
 import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
-import ErrorHandler from '@core/models/error-handler.model';
+import { getCustomRepository } from 'typeorm';
+import { ErrorHandler } from '@core/models';
 import { config } from '@core/config';
+import { UserRepository } from '@modules/user/repositories';
 
-export default function authenticatedMiddleware(request: Request, response: Response, next: NextFunction): void {
+export async function authenticatedMiddleware(request: Request, response: Response, next: NextFunction): Promise<void> {
   const authHeader = request.headers.authorization;
 
   if (!authHeader) {
@@ -11,15 +14,13 @@ export default function authenticatedMiddleware(request: Request, response: Resp
 	}
 
   try {
-		if (!authHeader.startsWith('Bearer')) {
-			throw new Error();
-		}
-
 		const [, token] = authHeader.split(' ');
     const { sub } = verify(token, config.jwt.secret);
-    request.user = { id: sub as string };
+		const userRepository = getCustomRepository(UserRepository);
+		const user = instanceToInstance(await userRepository.findByIdOrFail(sub as string));
+    request.user = user;
     return next();
-  } catch {
+  } catch (err) {
     throw new ErrorHandler('Token de autenticação inválido', 401);
   }
 }

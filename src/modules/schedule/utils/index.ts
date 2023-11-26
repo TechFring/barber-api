@@ -1,4 +1,4 @@
-import LaborEntity from '@modules/labor/entities/labor.entity';
+import { LaborEntity } from '@modules/labor/entities';
 
 export function calculateEndTime(labors: LaborEntity[], startTime: Date): Date {
 	const duration = labors.reduce((a, b) => a + b.duration, 0);

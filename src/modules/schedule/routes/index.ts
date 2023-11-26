@@ -1,9 +1,9 @@
 import { Joi, Segments, celebrate } from 'celebrate';
 import { Router } from 'express';
-import authenticatedMiddleware from '@core/middlewares/authenticated.middleware';
-import ScheduleController from '../controllers/schedule.controller';
+import { authenticatedMiddleware } from '@core/middlewares';
+import { ScheduleController } from '../controllers';
 
-const scheduleRoutes = Router();
+export const scheduleRoutes = Router();
 scheduleRoutes.use(authenticatedMiddleware);
 
 scheduleRoutes.get('/', celebrate({
@@ -66,5 +66,3 @@ scheduleRoutes.delete('/:id', celebrate({
 		id: Joi.string().uuid()
 	}
 }), ScheduleController.delete);
-
-export default scheduleRoutes;

@@ -1,11 +1,11 @@
 import { EntityRepository, Repository } from 'typeorm';
-import ErrorHandler from '@core/models/error-handler.model';
-import ScheduleEntity from '../entities/schedule.entity';
+import { ErrorHandler } from '@core/models';
+import { ScheduleEntity } from '../entities';
 
 @EntityRepository(ScheduleEntity)
-export default class ScheduleRepository extends Repository<ScheduleEntity> {
+export class ScheduleRepository extends Repository<ScheduleEntity> {
 	public async findByIdOrFail(id: string): Promise<ScheduleEntity> {
-		const schedule = await this.findOne(id);
+		const schedule = await this.findOne(id, { relations: ['schedule_labor'] });
 		
 		if (!schedule) {
 			throw new ErrorHandler('Agendamento não encontrado');

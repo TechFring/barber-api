@@ -7,7 +7,7 @@ import { errors } from 'celebrate';
 import { pagination } from 'typeorm-pagination';
 import './typeorm';
 import routes from './routes';
-import errorHandlerMiddleware from './middlewares/error-handler.middleware';
+import { errorHandlerMiddleware } from './middlewares';
 
 process.env.TZ = 'America/Sao_Paulo';
 

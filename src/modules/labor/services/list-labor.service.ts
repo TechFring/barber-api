@@ -1,15 +1,15 @@
-import { getRepository } from 'typeorm';
+import { Request } from 'express';
+import { getCustomRepository } from 'typeorm';
 import { PaginationAwareObject } from 'typeorm-pagination/dist/helpers/pagination';
-import buildFilterUtil from '@shared/utils/build-filter.util';
-import LaborEntity from '../entities/labor.entity';
-import { ILaborPayload } from '../contracts';
+import { buildFilterUtil } from '@shared/utils';
+import { LaborRepository } from '../repositories';
 
-type TQuery = Partial<Omit<ILaborPayload, 'id'>>;
-
-export default abstract class ListLaborService {
-	public static async execute(query: TQuery): Promise<PaginationAwareObject> {
-		const repository = getRepository(LaborEntity);
+export abstract class ListLaborService {
+	public static async execute(request: Request): Promise<PaginationAwareObject> {
+		const { query } = request;
+		const repository = getCustomRepository(LaborRepository);
 		const filter = buildFilterUtil(query);
+
 		return repository.createQueryBuilder()
 			.where(filter.query, filter.parameters)
 			.orderBy('active', 'DESC')

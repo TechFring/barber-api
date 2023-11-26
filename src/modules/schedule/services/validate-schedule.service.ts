@@ -1,33 +1,28 @@
+import { Request } from 'express';
 import { getCustomRepository } from 'typeorm';
-import LaborRepository from '@modules/labor/repositories';
-import BarberRepository from '@modules/barber/repositories';
-import LaborEntity from '@modules/labor/entities/labor.entity';
-import { ISchedulePayload, IScheduleSuggestion } from '../contracts';
-import ScheduleRepository from '../repositories';
+import { LaborEntity } from '@modules/labor/entities';
+import { LaborRepository } from '@modules/labor/repositories';
+import { BarberRepository } from '@modules/barber/repositories';
+import { IScheduleSuggestion } from '../contracts';
+import { ScheduleEntity } from '../entities';
+import { ScheduleRepository } from '../repositories';
 import { calculateEndTime } from '../utils';
-import ScheduleEntity from '../entities/schedule.entity';
-
-type TPayload = Omit<ISchedulePayload, 'name' | 'customer_id'>;
 
 export default abstract class ValidateScheduleService {
-	public static async execute(payload: TPayload) {
+	public static async execute(request: Request) {
+		const { body } = request;
 		const scheduleRepository = getCustomRepository(ScheduleRepository);
 		const laborRepository = getCustomRepository(LaborRepository);
 		const barberRepository = getCustomRepository(BarberRepository);
 
-		await barberRepository.findByIdOrFail(payload.barber_id, false);
-		const labors = await laborRepository.findByIdsOrFail(payload.labors, false);
+		await barberRepository.findByIdOrFail(body.barber_id, false);
 
-		const endTime = calculateEndTime(labors, payload.start_time);
-		const schedule = await scheduleRepository.checkAvailability(payload.barber_id, payload.start_time, endTime);
-		const available = !schedule;
-
-		if (schedule?.id === payload?.id || available) {
-			return { available: true, suggestions: [] };
-		}
-
-		const schedules = await scheduleRepository.findByBarberAndDay(payload.barber_id, new Date(payload.start_time.getTime()));
-		const suggestions = getSuggestedTimes(schedules, labors, payload.start_time);
+		const labors = await laborRepository.findByIdsOrFail(body.labors, false);
+		const endTime = calculateEndTime(labors, body.start_time);
+		const schedule = await scheduleRepository.checkAvailability(body.barber_id, body.start_time, endTime);
+		const available = !schedule || schedule?.id === body?.id;
+		const schedules = await scheduleRepository.findByBarberAndDay(body.barber_id, new Date(body.start_time.getTime()));
+		const suggestions = getSuggestedTimes(schedules, labors, body.start_time);
 
 		return { available, suggestions };
 	}

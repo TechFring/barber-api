@@ -1,32 +1,24 @@
-import { getRepository } from 'typeorm';
-import ErrorHandler from '@core/models/error-handler.model';
-import { ICustomerPayload } from '../contracts';
-import CustomerEntity from '../entities/customer.entity';
+import { Request } from 'express';
+import { getCustomRepository } from 'typeorm';
+import { LogActionEnum } from '@modules/logs/enums';
+import { CreateLogService } from '@modules/logs/services';
+import { CustomerEntity } from '../entities';
+import { CustomerRepository } from '../repositories';
 
-export default abstract class UpdateCustomerService {
-	public static async execute(payload: ICustomerPayload): Promise<CustomerEntity> {
-		const repository = getRepository(CustomerEntity);
-		const customer = await repository.findOne(payload.id);
+export abstract class UpdateCustomerService {
+	public static async execute(request: Request): Promise<CustomerEntity> {
+		const { params, body, user } = request;
+		const repository = getCustomRepository(CustomerRepository);
+		const customer = await repository.findByIdOrFail(params.id);
+		const logDescription = `O usuário ${user.name} atualizou o registro do cliente ${customer.name}`;
 
-		if (!customer) {
-			throw new ErrorHandler('Cliente não encontrado');
-		}
+		await repository.checkEmail(body.email, params.id);
+		await repository.checkPhone(body.phone, params.id);
+		await CreateLogService.execute(user.id, logDescription, LogActionEnum.Update);
 
-		const emailAlreadyUsed = await repository.findOne({ where: { email: payload.email } });
-
-		if (emailAlreadyUsed && emailAlreadyUsed.id !== customer.id) {
-			throw new ErrorHandler('O email informado já está em uso');
-		}
-
-		const phoneAlreadyUsed = await repository.findOne({ where: { phone: payload.phone } });
-
-		if (phoneAlreadyUsed && phoneAlreadyUsed.id !== customer.id) {
-			throw new ErrorHandler('O telefone informado já está em uso');
-		}
-
-		customer.name = payload.name;
-		customer.email = payload.email;
-		customer.phone = payload.phone;
+		customer.name = body.name;
+		customer.email = body.email;
+		customer.phone = body.phone;
 
 		return repository.save(customer);
 	}

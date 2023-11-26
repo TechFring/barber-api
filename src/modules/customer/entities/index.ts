@@ -1,8 +1,8 @@
-import ScheduleEntity from '@modules/schedule/entities/schedule.entity';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { ScheduleEntity } from '@modules/schedule/entities';
 
 @Entity('customer')
-export default class CustomerEntity {
+export class CustomerEntity {
 	@PrimaryGeneratedColumn()
 	public id: string;
 	
@@ -21,9 +21,9 @@ export default class CustomerEntity {
 	@Column('boolean')
 	public active: boolean;
 
-	@CreateDateColumn()
+	@CreateDateColumn({ type: 'timestamp with time zone' })
 	public created_at: Date;
 
-	@UpdateDateColumn()
+	@UpdateDateColumn({ type: 'timestamp with time zone' })
 	public updated_at: Date;
 }

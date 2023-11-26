@@ -1,9 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import LaborEntity from '@modules/labor/entities/labor.entity';
-import ScheduleEntity from './schedule.entity';
+import { LaborEntity } from '@modules/labor/entities';
+import { ScheduleEntity } from './schedule.entity';
 
 @Entity('schedule_labor')
-export default class ScheduleLaborEntity {
+export class ScheduleLaborEntity {
 	@PrimaryGeneratedColumn()
 	public id: string;
 

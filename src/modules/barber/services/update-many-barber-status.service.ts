@@ -1,17 +1,22 @@
-import { getRepository } from 'typeorm';
-import ErrorHandler from '@core/models/error-handler.model';
-import BarberEntity from '../entities/barber.entity';
+import { Request } from 'express';
+import { getCustomRepository } from 'typeorm';
+import { LogActionEnum } from '@modules/logs/enums';
+import { CreateLogService } from '@modules/logs/services';
+import { BarberEntity } from '../entities';
+import { BarberRepository } from '../repositories';
 
-export default abstract class UpdateManyBarberStatusService {
-	public static async execute(ids: string[], active = true): Promise<void> {
-		const repository = getRepository(BarberEntity);
-		const barbers = await repository.findByIds(ids);
+export abstract class UpdateManyBarberStatusService {
+	public static async execute(request: Request, active = true): Promise<BarberEntity[]> {
+		const { body, user } = request;
+		const repository = getCustomRepository(BarberRepository);
+		const barbers = await repository.findByIdsOrFail(body.ids);
+		const barbersNames = barbers.map(b => b.name).join(', ');
+		const logDescription = `O usuário ${user.name} ${active ? 'ativou' : 'inativou'} os registros dos barbeiros: ${barbersNames}`;
 
-		if (!barbers.length) {
-			throw new ErrorHandler('Nenhum barbeiro informado foi encontrado');
-		}
+		await CreateLogService.execute(user.id, logDescription, active ? LogActionEnum.Activate : LogActionEnum.Inactivate);
 
 		barbers.forEach(barber => barber.active = active);
-		await repository.save(barbers);
+
+		return repository.save(barbers);
 	}
 }

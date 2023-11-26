@@ -1,15 +1,15 @@
-import { getRepository } from 'typeorm';
+import { Request } from 'express';
+import { getCustomRepository } from 'typeorm';
 import { PaginationAwareObject } from 'typeorm-pagination/dist/helpers/pagination';
-import buildFilterUtil from '@shared/utils/build-filter.util';
-import CustomerEntity from '../entities/customer.entity';
-import { ICustomerPayload } from '../contracts';
+import { buildFilterUtil } from '@shared/utils';
+import { CustomerRepository } from '../repositories';
 
-type TQuery = Partial<Omit<ICustomerPayload, 'id'>>;
-
-export default abstract class ListCustomerService {
-	public static async execute(query: TQuery): Promise<PaginationAwareObject> {
-		const repository = getRepository(CustomerEntity);
+export abstract class ListCustomerService {
+	public static async execute(request: Request): Promise<PaginationAwareObject> {
+		const { query } = request;
+		const repository = getCustomRepository(CustomerRepository);
 		const filter = buildFilterUtil(query);
+
 		return repository.createQueryBuilder()
 			.where(filter.query, filter.parameters)
 			.orderBy('active', 'DESC')

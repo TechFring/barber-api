@@ -1,16 +1,13 @@
+import { Request } from 'express';
 import { getCustomRepository } from 'typeorm';
-import ErrorHandler from '@core/models/error-handler.model';
-import ScheduleEntity from '../entities/schedule.entity';
-import ScheduleRepository from '../repositories';
+import { ScheduleEntity } from '../entities';
+import { ScheduleRepository } from '../repositories';
 
 export default abstract class SearchScheduleService {
-	public static async execute(id: string): Promise<ScheduleEntity> {
+	public static async execute(request: Request): Promise<ScheduleEntity> {
+		const { params } = request;
 		const repository = getCustomRepository(ScheduleRepository);
-		const schedule = await repository.findOne(id, { relations: ['schedule_labor'] });
-
-		if (!schedule) {
-			throw new ErrorHandler('Agendamento não encontrado');
-		}
+		const schedule = await repository.findByIdOrFail(params.id);
 
 		return schedule;
 	}

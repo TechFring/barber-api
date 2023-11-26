@@ -1,26 +1,23 @@
-import { getRepository } from 'typeorm';
-import ErrorHandler from '@core/models/error-handler.model';
-import BarberEntity from '../entities/barber.entity';
-import { IBarberPayload } from '../contracts';
+import { getCustomRepository } from 'typeorm';
+import { Request } from 'express';
+import { LogActionEnum } from '@modules/logs/enums';
+import { CreateLogService } from '@modules/logs/services';
+import { BarberEntity } from '../entities';
+import { BarberRepository } from '../repositories';
 
-type TPayload = Omit<IBarberPayload, 'id'>;
+export abstract class CreateBarberService {
+	public static async execute(request: Request): Promise<BarberEntity> {
+		const { body, user } = request;
+		const barberRepository = getCustomRepository(BarberRepository);
+		
+		await barberRepository.checkEmail(body.email);
+		await barberRepository.checkDocument(body.document);
+		
+		const barber = barberRepository.create(body as BarberEntity);
+		const logDescription = `O usuário ${user.name} cadastrou o barbeiro ${barber.name}`;
 
-export default abstract class CreateBarberService {
-	public static async execute(payload: TPayload): Promise<BarberEntity> {
-		const repository = getRepository(BarberEntity);
-		const emailAlreadyUsed = await repository.findOne({ where: { email: payload.email } });
+		await CreateLogService.execute(user.id, logDescription, LogActionEnum.Create);
 
-		if (emailAlreadyUsed) {
-			throw new ErrorHandler('O email informado já está em uso');
-		}
-
-		const docAlreadyUsed = await repository.findOne({ where: { document: payload.document } });
-
-		if (docAlreadyUsed) {
-			throw new ErrorHandler('O documento informado já está em uso');
-		}
-
-		const barber = repository.create(payload);
-		return repository.save(barber);
+		return barberRepository.save(barber);
 	}
 }

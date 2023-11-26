@@ -9,5 +9,5 @@ module.exports = {
 	entities: ['./src/modules/**/entities/*.ts'],
 	cli: {
 		'migrationsDir': 'src/core/typeorm/migrations/'
-	}
+	},
 }

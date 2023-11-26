@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export default function buildFilterUtil(obj: any) {
-	const ignoredKeys = ['page', 'per_page'];
+export function buildFilterUtil(obj: any, ignored: string[] = []) {
+	const ignoredKeys = [...ignored, 'page', 'per_page'];
 	const filters = Object.keys(obj).filter(key => obj[key] && !ignoredKeys.includes(key));
 
 	if (!filters.length) {

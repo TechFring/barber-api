@@ -1,9 +1,9 @@
 import { Joi, Segments, celebrate } from 'celebrate';
 import { Router } from 'express';
 import { UserController } from '../controllers';
-import authenticatedMiddleware from '@core/middlewares/authenticated.middleware';
+import { authenticatedMiddleware } from '@core/middlewares';
 
-const userRoutes = Router();
+export const userRoutes = Router();
 
 userRoutes.get('/', authenticatedMiddleware, celebrate({
 	[Segments.QUERY]: {
@@ -31,5 +31,3 @@ userRoutes.post('/auth', celebrate({
 		password: Joi.string().required(),
 	}
 }), UserController.auth);
-
-export default userRoutes;

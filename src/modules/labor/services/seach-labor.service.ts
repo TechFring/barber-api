@@ -1,15 +1,13 @@
-import { getRepository } from 'typeorm';
-import ErrorHandler from '@core/models/error-handler.model';
-import LaborEntity from '../entities/labor.entity';
+import { Request } from 'express';
+import { getCustomRepository } from 'typeorm';
+import { LaborEntity } from '../entities';
+import { LaborRepository } from '../repositories';
 
-export default abstract class SearchLaborService {
-	public static async execute(id: string): Promise<LaborEntity> {
-		const repository = getRepository(LaborEntity);
-		const labor = await repository.findOne(id);
-
-		if (!labor) {
-			throw new ErrorHandler('Serviço não encontrado');
-		}
+export abstract class SearchLaborService {
+	public static async execute(request: Request): Promise<LaborEntity> {
+		const { params } = request;
+		const repository = getCustomRepository(LaborRepository);
+		const labor = await repository.findByIdOrFail(params.id);
 
 		return labor;
 	}

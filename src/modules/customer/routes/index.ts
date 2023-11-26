@@ -1,9 +1,9 @@
 import { Joi, Segments, celebrate } from 'celebrate';
 import { Router } from 'express';
-import authenticatedMiddleware from '@core/middlewares/authenticated.middleware';
-import CustomerController from '../controllers/customer.controller';
+import { authenticatedMiddleware } from '@core/middlewares';
+import { CustomerController } from '../controllers';
 
-const customerRoutes = Router();
+export const customerRoutes = Router();
 customerRoutes.use(authenticatedMiddleware);
 
 customerRoutes.get('/', celebrate({
@@ -65,5 +65,3 @@ customerRoutes.patch('/inactive/:id', celebrate({
 		id: Joi.string().uuid()
 	}
 }), CustomerController.inactive);
-
-export default customerRoutes;

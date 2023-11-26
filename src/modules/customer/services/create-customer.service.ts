@@ -1,26 +1,23 @@
-import { getRepository } from 'typeorm';
-import ErrorHandler from '@core/models/error-handler.model';
-import CustomerEntity from '../entities/customer.entity';
-import { ICustomerPayload } from '../contracts';
+import { getCustomRepository } from 'typeorm';
+import { Request } from 'express';
+import { LogActionEnum } from '@modules/logs/enums';
+import { CreateLogService } from '@modules/logs/services';
+import { CustomerEntity } from '../entities';
+import { CustomerRepository } from '../repositories';
 
-type TPayload = Omit<ICustomerPayload, 'id'>;
+export abstract class CreateCustomerService {
+	public static async execute(request: Request): Promise<CustomerEntity> {
+		const { body, user } = request;
+		const repository = getCustomRepository(CustomerRepository);
+		
+		await repository.checkEmail(body.phone);
+		await repository.checkPhone(body.email);
 
-export default abstract class CreateCustomerService {
-	public static async execute(payload: TPayload): Promise<CustomerEntity> {
-		const repository = getRepository(CustomerEntity);
-		const phoneAlreadyUsed = await repository.findOne({ where: { phone: payload.phone } });
+		const customer = repository.create(body as CustomerEntity);
+		const logDescription = `O usuário ${user.name} cadastrou o cliente ${customer.name}`;
 
-		if (phoneAlreadyUsed) {
-			throw new ErrorHandler('O telefone informado já está em uso');
-		}
+		await CreateLogService.execute(user.id, logDescription, LogActionEnum.Create);
 
-		const emailAlreadyUsed = await repository.findOne({ where: { email: payload.email } });
-
-		if (emailAlreadyUsed) {
-			throw new ErrorHandler('O email informado já está em uso');
-		}
-
-		const customer = repository.create(payload);
 		return repository.save(customer);
 	}
 }

@@ -1,10 +1,10 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import ScheduleLaborEntity from './schedule-labor.entity';
-import BarberEntity from '@modules/barber/entities/barber.entity';
-import CustomerEntity from '@modules/customer/entities/customer.entity';
+import { BarberEntity } from '@modules/barber/entities';
+import { CustomerEntity } from '@modules/customer/entities';
+import { ScheduleLaborEntity } from './schedule-labor.entity';
 
 @Entity('schedule')
-export default class ScheduleEntity {
+export class ScheduleEntity {
 	@PrimaryGeneratedColumn()
 	public id: string;
 
@@ -37,9 +37,9 @@ export default class ScheduleEntity {
 	@Column('boolean')
 	public active: boolean;
 
-	@CreateDateColumn()
+	@CreateDateColumn({ type: 'timestamp with time zone' })
 	public created_at: Date;
 
-	@UpdateDateColumn()
+	@UpdateDateColumn({ type: 'timestamp with time zone' })
 	public updated_at: Date;
 }

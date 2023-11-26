@@ -1,24 +1,21 @@
-import { getRepository } from 'typeorm';
-import { ILaborPayload } from '../contracts';
-import LaborEntity from '../entities/labor.entity';
-import ErrorHandler from '@core/models/error-handler.model';
+import { Request } from 'express';
+import { getCustomRepository } from 'typeorm';
+import { LogActionEnum } from '@modules/logs/enums';
+import { CreateLogService } from '@modules/logs/services';
+import { LaborEntity } from '../entities';
+import { LaborRepository } from '../repositories';
 
-export default abstract class UpdateLaborService {
-	public static async execute(payload: ILaborPayload): Promise<LaborEntity> {
-		const repository = getRepository(LaborEntity);
-		const labor = await repository.findOne(payload.id);
+export abstract class UpdateLaborService {
+	public static async execute(request: Request): Promise<LaborEntity> {
+		const { params, body, user } = request;
+		const repository = getCustomRepository(LaborRepository);
+		const labor = await repository.findByIdOrFail(params.id);
+		const logDescription = `O usuário ${user.name} atualizou o registro do serviço ${labor.name}`;
 
-		if (!labor) {
-			throw new ErrorHandler('Serviço não encontrado');
-		}
+		await repository.checkName(body.name, params.id);
+		await CreateLogService.execute(user.id, logDescription, LogActionEnum.Update);
 
-		const nameAlreadyUsed = await repository.findOne({ where: { name: payload.name } });
-
-		if (nameAlreadyUsed && nameAlreadyUsed.id !== labor.id) {
-			throw new ErrorHandler('O nome informado já está em uso');
-		}
-
-		labor.name = payload.name;
+		labor.name = body.name;
 
 		return repository.save(labor);
 	}

@@ -1,15 +1,13 @@
-import { getRepository } from 'typeorm';
-import ErrorHandler from '@core/models/error-handler.model';
-import BarberEntity from '../entities/barber.entity';
+import { Request } from 'express';
+import { getCustomRepository } from 'typeorm';
+import { BarberEntity } from '../entities';
+import { BarberRepository } from '../repositories';
 
-export default abstract class SearchBarberService {
-	public static async execute(id: string): Promise<BarberEntity> {
-		const repository = getRepository(BarberEntity);
-		const barber = await repository.findOne(id);
-
-		if (!barber) {
-			throw new ErrorHandler('Barbeiro não encontrado');
-		}
+export abstract class SearchBarberService {
+	public static async execute(request: Request): Promise<BarberEntity> {
+		const { params } = request;
+		const repository = getCustomRepository(BarberRepository);
+		const barber = await repository.findByIdOrFail(params.id);
 
 		return barber;
 	}

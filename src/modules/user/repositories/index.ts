@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import ErrorHandler from '@core/models/error-handler.model';
+import { ErrorHandler } from '@core/models';
 import { UserEntity } from '../entities';
 
 @EntityRepository(UserEntity)
