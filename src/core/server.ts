@@ -11,6 +11,8 @@ import routes from './routes';
 import { errorHandlerMiddleware } from './middlewares';
 import { runMigrations } from './typeorm';
 
+process.env.TZ = 'America/Sao_Paulo';
+
 (async function() {
 	const app = express();
 	const port = 3333;
