@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 import { Exclude } from 'class-transformer';
 
 @Entity('user')
-export abstract class UserEntity {
+export class UserEntity {
 	@PrimaryGeneratedColumn()
 	public id: string;
 
@@ -17,7 +17,7 @@ export abstract class UserEntity {
 	public password: string;
 
 	@Column('int')
-	public level: boolean;
+	public level: number;
 
 	@Column('boolean')
 	public active: boolean;

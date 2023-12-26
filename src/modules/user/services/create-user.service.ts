@@ -1,6 +1,7 @@
 import { hash } from 'bcryptjs';
 import { Request } from 'express';
 import { getCustomRepository } from 'typeorm';
+import { config } from '@core/config';
 import { CreateLogService } from '@modules/logs/services';
 import { UserEntity } from '../entities';
 import { UserRepository } from '../repositories';
@@ -12,10 +13,10 @@ export abstract class CreateUserService {
 
 		await repository.checkLogin(body.login);
 
-		const hashedPassword = await hash(body.password, 8);
+		const hashedPassword = await hash(body.password, config.bcrypt.passwordSalt);
 		const user = repository.create({ ...body, password: hashedPassword } as UserEntity);
 
-		await CreateLogService.execute(`O usuário ${authUser.name} cadastrou o usuário ${user.name}`);
+		await CreateLogService.execute(`O usuário ${authUser.login} cadastrou o usuário ${user.login}`);
 
 		return repository.save(user);
 	}

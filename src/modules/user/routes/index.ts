@@ -6,25 +6,68 @@ import { UserLevelEnum } from '../enums';
 
 export const userRoutes = Router();
 
+const level = Joi.number().valid(UserLevelEnum.Operator, UserLevelEnum.Moderator, UserLevelEnum.Admin);
+
 userRoutes.get('/', authenticatedMiddleware, celebrate({
 	[Segments.QUERY]: {
 		name: Joi.string().allow(''),
-		username: Joi.number().integer().allow(''),
-		admin: Joi.boolean().allow(''),
-		active: Joi.boolean().allow(''),
+		login: Joi.string().allow(''),
+		level: level.allow(''),
 		page: Joi.number().integer().allow(''),
 		per_page: Joi.number().integer().allow(''),
 	}
 }), UserController.list);
 
-userRoutes.post('/', celebrate({
+userRoutes.get('/:id', authenticatedMiddleware, celebrate({
+	[Segments.PARAMS]: {
+		id: Joi.string().uuid(),
+	}
+}), UserController.search);
+
+userRoutes.post('/', authenticatedMiddleware, celebrate({
 	[Segments.BODY]: {
 		name: Joi.string().required(),
 		login: Joi.string().required(),
 		password: Joi.string().required(),
-		level: Joi.number().valid(UserLevelEnum.Operator, UserLevelEnum.Moderator, UserLevelEnum.Admin).required(),
+		level: level.required(),
 	}
 }), UserController.create);
+
+userRoutes.put('/:id', authenticatedMiddleware, celebrate({
+	[Segments.PARAMS]: {
+		id: Joi.string().uuid(),
+	},
+	[Segments.BODY]: {
+		name: Joi.string().required(),
+		login: Joi.string().required(),
+		password: Joi.string().allow(''),
+		level: level.required(),
+	}
+}), UserController.update);
+
+userRoutes.patch('/active', authenticatedMiddleware, celebrate({
+	[Segments.BODY]: {
+		ids: Joi.array().items(Joi.string().uuid().required()).required()
+	}
+}), UserController.activeMany);
+
+userRoutes.patch('/active/:id', authenticatedMiddleware, celebrate({
+	[Segments.PARAMS]: {
+		id: Joi.string().uuid()
+	}
+}), UserController.active);
+
+userRoutes.patch('/inactive', authenticatedMiddleware, celebrate({
+	[Segments.BODY]: {
+		ids: Joi.array().items(Joi.string().uuid().required()).required()
+	}
+}), UserController.inactiveMany);
+
+userRoutes.patch('/inactive/:id', authenticatedMiddleware, celebrate({
+	[Segments.PARAMS]: {
+		id: Joi.string().uuid()
+	}
+}), UserController.inactive);
 
 userRoutes.post('/auth', celebrate({
 	[Segments.BODY]: {
