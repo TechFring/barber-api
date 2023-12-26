@@ -17,10 +17,10 @@ export async function authenticatedMiddleware(request: Request, response: Respon
 		const [, token] = authHeader.split(' ');
     const { sub } = verify(token, config.jwt.secret);
 		const userRepository = getCustomRepository(UserRepository);
-		const user = instanceToInstance(await userRepository.findByIdOrFail(sub as string));
-    request.user = user;
+		const authUser = instanceToInstance(await userRepository.findByIdOrFail(sub as string));
+    request.user = authUser;
     return next();
   } catch (err) {
-    throw new ErrorHandler('Token de autenticação inválido', 401);
+    throw new ErrorHandler('Token de autenticação inválido', 418);
   }
 }

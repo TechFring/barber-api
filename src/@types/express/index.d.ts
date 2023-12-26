@@ -4,7 +4,7 @@ declare namespace Express {
       id: string;
 			name: string;
 			login: string;
-			admin: boolean;
+			level: number;
 			active: boolean;
 			created_at: Date;
 			updated_at: Date;
