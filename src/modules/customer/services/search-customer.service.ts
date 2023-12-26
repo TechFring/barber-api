@@ -7,7 +7,7 @@ export abstract class SearchCustomerService {
 	public static async execute(request: Request): Promise<CustomerEntity> {
 		const { params } = request;
 		const repository = getCustomRepository(CustomerRepository);
-		const customer = await repository.findByIdOrFail(params.id);
+		const customer = await repository.findByIdOrFail(params.id, false);
 
 		return customer; 
 	}

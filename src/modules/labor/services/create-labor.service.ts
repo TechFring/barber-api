@@ -1,6 +1,5 @@
 import { Request } from 'express';
 import { getCustomRepository } from 'typeorm';
-import { LogActionEnum } from '@modules/logs/enums';
 import { CreateLogService } from '@modules/logs/services';
 import { LaborEntity } from '../entities';
 import { LaborRepository } from '../repositories';
@@ -14,7 +13,7 @@ export abstract class CreateLaborService {
 
 		const labor = repository.create(body as LaborEntity);
 
-		await CreateLogService.execute(`O usuário ${user.name} cadastrou o serviço ${labor.name}`);
+		await CreateLogService.execute(`O usuário ${user.login} cadastrou o serviço ${labor.name}`);
 
 		return repository.save(labor);
 	}

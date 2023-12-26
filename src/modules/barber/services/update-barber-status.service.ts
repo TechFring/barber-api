@@ -8,9 +8,9 @@ export abstract class UpdateBarberStatusService {
 	public static async execute(request: Request, active = true): Promise<BarberEntity> {
 		const { params, user } = request;
 		const repository = getCustomRepository(BarberRepository);
-		const barber = await repository.findByIdOrFail(params.id);
+		const barber = await repository.findByIdOrFail(params.id, false);
 
-		await CreateLogService.execute(`O usuário ${user.name} ${active ? 'ativou' : 'inativou'} o barbeiro ${barber.name}`);
+		await CreateLogService.execute(`O usuário ${user.login} ${active ? 'ativou' : 'inativou'} o barbeiro ${barber.name}`);
 
 		barber.active = active;
 

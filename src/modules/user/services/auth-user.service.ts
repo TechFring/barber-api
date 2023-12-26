@@ -15,17 +15,18 @@ export abstract class AuthUserService {
 		const user = await repository.findOne({ where: { login: body.login } });
 		const passwordMatcher = await compare(body.password, user?.password || '');
 
-		if (!user || !passwordMatcher) {
+		if (!user || !user.active || !passwordMatcher) {
 			throw new ErrorHandler('Login ou senha incorretos');
 		}
 
-		await CreateLogService.execute(`O usuário ${user.name} realizou autenticação`);
+		await CreateLogService.execute(`O usuário ${user.login} realizou autenticação`);
 
-		const token = sign({}, config.jwt.secret, {
+		const { name, active, level } = user;
+		const token = sign({ name, active, level }, config.jwt.secret, {
 			subject: user.id,
-			expiresIn: config.jwt.expiresIn
+			expiresIn: config.jwt.expiresIn,
 		});
 
-		return { user: user, token };
+		return { token };
 	}
 }

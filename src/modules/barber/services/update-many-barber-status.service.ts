@@ -11,7 +11,7 @@ export abstract class UpdateManyBarberStatusService {
 		const barbers = await repository.findByIdsOrFail(body.ids);
 		const barbersNames = barbers.map(b => b.name).join(', ');
 
-		await CreateLogService.execute(`O usuário ${user.name} ${active ? 'ativou' : 'inativou'} os barbeiros: ${barbersNames}`);
+		await CreateLogService.execute(`O usuário ${user.login} ${active ? 'ativou' : 'inativou'} os barbeiros: ${barbersNames}`);
 
 		barbers.forEach(barber => barber.active = active);
 

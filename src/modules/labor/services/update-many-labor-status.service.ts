@@ -11,7 +11,7 @@ export abstract class UpdateManyLaborStatusService {
 		const labors = await repository.findByIdsOrFail(body.ids, false);
 		const laborsNames = labors.map(l => l.name).join(', ');
 
-		await CreateLogService.execute(`O usuário ${user.name} ${active ? 'ativou' : 'inativou'} os serviços: ${laborsNames}`);
+		await CreateLogService.execute(`O usuário ${user.login} ${active ? 'ativou' : 'inativou'} os serviços: ${laborsNames}`);
 
 		labors.forEach(labor => labor.active = active);
 

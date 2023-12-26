@@ -9,7 +9,7 @@ export default abstract class DeleteScheduleService {
 		const repository = getCustomRepository(ScheduleRepository);
 		const schedule = await repository.findByIdOrFail(params.id);
 
-		await CreateLogService.execute(`O usuário ${user.name} removeu o agendamento ${schedule.name}`);
+		await CreateLogService.execute(`O usuário ${user.login} removeu o agendamento ${schedule.name}`);
 
 		await repository.remove(schedule);
 	}

@@ -14,7 +14,7 @@ export abstract class CreateBarberService {
 		
 		const barber = barberRepository.create(body as BarberEntity);
 
-		await CreateLogService.execute(`O usuário ${user.name} cadastrou o barbeiro ${barber.name}`);
+		await CreateLogService.execute(`O usuário ${user.login} cadastrou o barbeiro ${barber.name}`);
 
 		return barberRepository.save(barber);
 	}

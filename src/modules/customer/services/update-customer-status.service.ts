@@ -8,9 +8,9 @@ export abstract class UpdateCustomerStatusService {
 	public static async execute(request: Request, active = true): Promise<CustomerEntity> {
 		const { params, user } = request;
 		const repository = getCustomRepository(CustomerRepository);
-		const customer = await repository.findByIdOrFail(params.id);
+		const customer = await repository.findByIdOrFail(params.id, false);
 
-		await CreateLogService.execute(`O usuário ${user.name} ${active ? 'ativou' : 'inativou'} o cliente ${customer.name}`);
+		await CreateLogService.execute(`O usuário ${user.login} ${active ? 'ativou' : 'inativou'} o cliente ${customer.name}`);
 
 		customer.active = active;
 

@@ -14,7 +14,7 @@ export abstract class CreateCustomerService {
 
 		const customer = repository.create(body as CustomerEntity);
 
-		await CreateLogService.execute(`O usuário ${user.name} cadastrou o cliente ${customer.name}`);
+		await CreateLogService.execute(`O usuário ${user.login} cadastrou o cliente ${customer.name}`);
 
 		return repository.save(customer);
 	}

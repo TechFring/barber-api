@@ -10,7 +10,7 @@ export abstract class UpdateLaborStatusService{
 		const repository = getCustomRepository(LaborRepository);
 		const labor = await repository.findByIdOrFail(params.id);
 
-		await CreateLogService.execute(`O usuário ${user.name} ${active ? 'ativou' : 'inativou'} o serviço ${labor.name}`);
+		await CreateLogService.execute(`O usuário ${user.login} ${active ? 'ativou' : 'inativou'} o serviço ${labor.name}`);
 
 		labor.active = active;
 

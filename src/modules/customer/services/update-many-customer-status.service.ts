@@ -11,7 +11,7 @@ export abstract class UpdateManyCustomerStatusService {
 		const customers = await repository.findByIdsOrFail(body.ids);
 		const customersNames = customers.map(b => b.name).join(', ');
 
-		await CreateLogService.execute(`O usuário ${user.name} ${active ? 'ativou' : 'inativou'} os clientes: ${customersNames}`);
+		await CreateLogService.execute(`O usuário ${user.login} ${active ? 'ativou' : 'inativou'} os clientes: ${customersNames}`);
 
 		customers.forEach(customer => customer.active = active);
 

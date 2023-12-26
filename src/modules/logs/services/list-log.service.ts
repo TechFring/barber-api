@@ -10,6 +10,7 @@ export abstract class ListLogService {
 		const repository = getRepository(LogEntity);
 		const filter = buildFilterUtil(query, ['created_at']);
 		const createdAt = query.created_at as string;
+		
 
 		if (createdAt) {
 			filter.query += Object.keys(filter.query).length ? ' AND ' : '';

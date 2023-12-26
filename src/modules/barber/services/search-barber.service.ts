@@ -7,7 +7,7 @@ export abstract class SearchBarberService {
 	public static async execute(request: Request): Promise<BarberEntity> {
 		const { params } = request;
 		const repository = getCustomRepository(BarberRepository);
-		const barber = await repository.findByIdOrFail(params.id);
+		const barber = await repository.findByIdOrFail(params.id, false);
 
 		return barber;
 	}

@@ -32,7 +32,7 @@ export default abstract class CreateScheduleService {
 			schedule_labor: labors.map((labor) => ({ labor_id: labor.id })) as ScheduleLaborEntity[]
 		});
 
-		await CreateLogService.execute(`O usuário ${user.name} cadastrou o agendamento ${schedule.name}`);
+		await CreateLogService.execute(`O usuário ${user.login} cadastrou o agendamento ${schedule.name}`);
 
 		return scheduleRepository.save(schedule);
 	}

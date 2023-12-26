@@ -11,7 +11,7 @@ export abstract class UpdateLaborService {
 		const labor = await repository.findByIdOrFail(params.id);
 
 		await repository.checkName(body.name, params.id);
-		await CreateLogService.execute(`O usuário ${user.name} atualizou o serviço ${labor.name}`);
+		await CreateLogService.execute(`O usuário ${user.login} atualizou o serviço ${labor.name}`);
 
 		labor.name = body.name;
 

@@ -28,7 +28,7 @@ export default abstract class UpdateScheduleService {
 		const scheduleLabors = await scheduleLaborRepository.find({ where: { schedule_id: schedule.id } });
 		await scheduleLaborRepository.remove(scheduleLabors);
 
-		await CreateLogService.execute(`O usuário ${user.name} atualizou o agendamento ${schedule.name}`);
+		await CreateLogService.execute(`O usuário ${user.login} atualizou o agendamento ${schedule.name}`);
 
 		schedule.name = body.name;
 		schedule.start_time = body.start_time;
