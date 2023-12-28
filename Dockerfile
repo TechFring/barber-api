@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-ENV TS_NODE=production
+ENV TS_NODE_DEV=false
 
 RUN npm install
 

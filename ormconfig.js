@@ -1,5 +1,5 @@
-const baseDir = process.env.TS_NODE === 'production' ? './dist' : './src';
-const extension = process.env.TS_NODE === 'production' ? '.js' : '.ts';
+const baseDir = process.env.TS_NODE_DEV === 'false' ? './dist' : './src';
+const extension = process.env.TS_NODE_DEV === 'false' ? '.js' : '.ts';
 
 module.exports = {
 	type: 'postgres',

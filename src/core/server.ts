@@ -1,3 +1,7 @@
+import dotenv from 'dotenv';
+dotenv.config();
+process.env.TZ = 'America/Sao_Paulo';
+
 import 'reflect-metadata';
 import 'express-async-errors';
 import express from 'express';
@@ -11,14 +15,17 @@ import routes from './routes';
 import { errorHandlerMiddleware } from './middlewares';
 import { runMigrations } from './typeorm';
 
-process.env.TZ = 'America/Sao_Paulo';
+const APP_PORT = 3333;
+
+const DB_HOST = process.env.DB_HOST!;
+const DB_PORT = +(process.env.DB_PORT!);
+const DB_TIMEOUT = 20000;
 
 (async function() {
 	const app = express();
-	const port = 3333;
 
 	try {
-		await waitPort({ host: process.env.DB_HOST, port: +(process.env.DB_PORT as string), timeout: 20000 });
+		await waitPort({ host: DB_HOST, port: DB_PORT, timeout: DB_TIMEOUT });
 		await runMigrations();
 
 		createConnection();
@@ -32,9 +39,9 @@ process.env.TZ = 'America/Sao_Paulo';
 		app.use(errors());
 		app.use(errorHandlerMiddleware);
 	
-		app.listen(port, () => console.log(`Serviço ouvindo a porta ${port}`));
+		app.listen(APP_PORT, () => console.log(`Serviço ouvindo a porta ${APP_PORT}`));
 	} catch (err) {
-		console.error(`Ocorreu um erro durante a inicialização da porta ${port}: ${err}`);
+		console.error(`Ocorreu um erro durante a inicialização da porta ${APP_PORT}: ${err}`);
     process.exit(1);
 	}
 })();
