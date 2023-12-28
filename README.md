@@ -4,6 +4,7 @@
 Antes de iniciar o projeto, certifique-se de ter as seguintes ferramentas instaladas e configuradas em seu ambiente:
 
 - Node.js 14.21
+- PostgreSQL
 - Docker
 - Docker Compose
 
