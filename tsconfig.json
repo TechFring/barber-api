@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "lib": ["es6"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "commonjs",
+    "rootDir": "src",
+    "baseUrl": "./",
+		"paths": {
+			"@config/*": ["src/config/*"],
+			"@modules/*": ["src/modules/*"],
+			"@core/*": ["src/core/*"],
+			"@shared/*": ["src/shared/*"],
+		},
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictPropertyInitialization": false,
+    "skipLibCheck": true,
+  },
+  "exclude": ["node_modules", "types"],
+  "include": ["src/**/*.ts"]
+}
