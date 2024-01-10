@@ -9,8 +9,8 @@ export abstract class CreateCustomerService {
 		const { body, user } = request;
 		const repository = getCustomRepository(CustomerRepository);
 		
-		await repository.checkEmail(body.phone);
-		await repository.checkPhone(body.email);
+		await repository.checkEmail(body.email);
+		await repository.checkPhone(body.phone);
 
 		const customer = repository.create(body as CustomerEntity);
 

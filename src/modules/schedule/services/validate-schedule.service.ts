@@ -29,15 +29,16 @@ export default abstract class ValidateScheduleService {
 }
 
 function getSuggestedTimes(schedules: ScheduleEntity[], labors: LaborEntity[], startTime: Date): IScheduleSuggestion[] {
-	startTime.setHours(5, 0, 0, 0); // 08:00
+  const suggestedTimes: IScheduleSuggestion[] = [];
+  const interval = 3e5;
 
-	const openingTime = new Date(startTime.getTime());
+  startTime.setHours(5, 0, 0, 0); // 08:00
+
+  const openingTime = new Date(startTime.getTime());
   openingTime.setHours(5, 0, 0, 0); // 08:00
 
-	const closingTime = new Date(startTime.getTime());
+  const closingTime = new Date(startTime.getTime());
   closingTime.setHours(17, 0, 0, 0); // 20:00
-
-  const suggestedTimes: IScheduleSuggestion[] = [];
 
   while (startTime < closingTime) {
     const endTime = calculateEndTime(labors, startTime);
@@ -47,7 +48,7 @@ function getSuggestedTimes(schedules: ScheduleEntity[], labors: LaborEntity[], s
       suggestedTimes.push({ start_time: new Date(startTime.getTime()), end_time: endTime });
     }
 
-    startTime.setTime(endTime.getTime());
+    startTime.setTime(endTime.getTime() + interval);
   }
 
   return suggestedTimes;
